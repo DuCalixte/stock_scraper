@@ -43,10 +43,10 @@ tr:after {
 }
 
 thead th{
-  height: 30px;
+  height: 40px;
 }
  tbody {
-  height: 400px;
+  height: 380px;
   overflow-y: auto;
 }
 
