@@ -1,15 +1,59 @@
 #!/usr/bin/python
+import os
+import posixpath
+import urllib
+import BaseHTTPServer
 from BaseHTTPServer import BaseHTTPRequestHandler,HTTPServer
 from os import curdir, sep
 import sys, getopt
 import cgi
 
+ROUTES = (
+	['','/app'],
+	['/','/app']
+	)
+
 class ServerHandler(BaseHTTPRequestHandler):
+
+	
+	def translate_path(self, path):
+		# """translate path given routes"""
+		print path
+		# set default root to cwd
+		root = os.getcwd()
+		print root
+		# look up routes and set root directory accordingly
+		for pattern, rootdir in ROUTES:
+			if path.startswith(pattern):
+				# found match!
+				path = path[len(pattern):]  # consume path up to pattern len
+				root = rootdir
+				break
+		# normalize path and prepend root directory
+		path = path.split('?',1)[0]
+		path = path.split('#',1)[0]
+		path = posixpath.normpath(urllib.unquote(path))
+		words = path.split('/')
+		words = filter(None, words)
+
+		path = root
+		for word in words:
+			drive, word = os.path.splitdrive(word)
+			head, word = os.path.split(word)
+			if  word in (os.curdir, os.pardir):
+				continue
+
+			path = os.path.join(path, word)
+
+		return path
+
 
 	# Handler for the GET requests
 	def do_GET(self):
 		if self.path=="/":
-			self.path="/app/views/index.html"
+			self.path="/app/index.html"
+		else:
+			self.path = self.translate_path(self.path)
 
 		try:
 			# Check the file extension required and set the right mime type
@@ -31,6 +75,21 @@ class ServerHandler(BaseHTTPRequestHandler):
 				sendReply = True
 			if self.path.endswith(".gif"):
 				mimetype='image/gif'
+				sendReply = True
+			if self.path.endswith(".woff"):
+				mimetype='application/font-woff'
+				sendReply = True
+			if self.path.endswith(".ttf"):
+				mimetype='application/font-ttf'
+				sendReply = True
+			if self.path.endswith(".eot"):
+				mimetype='application/vnd.ms-fontobject'
+				sendReply = True
+			if self.path.endswith(".otf"):
+				mimetype='application/font-otf'
+				sendReply = True
+			if self.path.endswith(".svg"):
+				mimetype='image/svg+xml'
 				sendReply = True
 			if self.path.endswith(".css"):
 				mimetype='text/css'

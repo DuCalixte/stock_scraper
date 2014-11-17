@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html ng-app="stock_scrapper">
+<head>
+	<meta name="description" content="An Example of showing stocks using yahoo api" />
+	<link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css">
+	<link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap-theme.css">
+	<script src="lib/angular/angular.js"></script>
+	<script src="js/controllers.js"></script>
+	<link rel="stylesheet" href="css/app.css">
+	<meta charset="utf-8">
+	<title>Stock Scrapper</title>
+</head>
+<body>
+	<div id="main" class="container">	
+		<div class="panel-group" id="accordion" ng-controller="DataStocksCtrl">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#accordion" href="#stock-list-panel" ng-click="openTab('tab one')">
+							<span ng-class="glyphicon-chevron-right" class="glyphicon glyphicon-chevron-right">List of Available Stocks</span>
+						</a>
+					</h4>
+				</div>
+				<div id="stock-list-panel" class="panel-collapse collapse in" ng-show="isOpenTab('tab one')">
+					<div class="panel-body table-responsive">
+						<table class="table table-hover" border="1">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Price</th>
+									<th>Symbol</th>
+									<th>Date</th>
+									<th>Volume</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="stock in stocks">
+									<td colspan="" rowspan="" headers="">{{stock.resource.fields.name}}</td>
+									<td colspan="" rowspan="" headers="">{{stock.resource.fields.price | currency}}</td>
+									<td colspan="" rowspan="" headers="">{{stock.resource.fields.symbol}}</td>
+									<td colspan="" rowspan="" headers="" type="datetime">{{stock.resource.fields.utctime | date: "yyyy-MM-ddTHH:mm:ss"}}</td>
+									<td colspan="" rowspan="" headers="">{{stock.resource.fields.volume}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
